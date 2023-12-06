@@ -90,7 +90,8 @@ def setup() -> None:
 
 def scaffold(day: int) -> None:
     """ Create boilerplate .py file for a given day's puzzle. """
-    assert day <= datetime.today().day, f'cannot scaffold for future days'
+    if 2000 + YEAR == datetime.today().year:
+        assert day <= datetime.today().day, f'cannot scaffold for future days'
     title = _get_title(day)
     if not (INPUTS / f'day{day}.txt').exists():
         _download_input_file(day)    
