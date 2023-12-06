@@ -12,6 +12,7 @@
     dependencies = [
         "ipykernel",
         "numpy",
+        "tqdm",
     ]
 
 [project.urls]
