@@ -68,6 +68,26 @@ def print_summary(caller: str, p1: Callable[[], any], p2: Callable[[], any], n =
 # CLI #
 #######
 
+def setup() -> None:
+    """ Create directory structure for the year. """
+    # inputs
+    assert not INPUTS.exists(), f'inputs directory for year 20{YEAR} already exists'
+    INPUTS.mkdir(parents=True)
+    # solutions
+    assert not SOLUTIONS.exists(), f'solutions directory for year 20{YEAR} already exists'
+    SOLUTIONS.mkdir(parents=True)
+    # __init__.py
+    with open(PAOC / '__init__.py', 'w') as f:
+        f.write(f'""" Everything related to the 20{YEAR} installment of Advent of Code. """\n')
+    # titles.txt
+    with open(PAOC / 'titles.txt', 'w') as f:
+        f.write('')
+    # answers.txt
+    with open(PAOC / 'answers.txt', 'w') as f:
+        f.write('')
+    print(f'setup for 20{YEAR} complete, run `paoc scaffold <day>` to create a solution file')
+    return
+
 def scaffold(day: int) -> None:
     """ Create boilerplate .py file for a given day's puzzle. """
     assert day <= datetime.today().day, f'cannot scaffold for future days'
