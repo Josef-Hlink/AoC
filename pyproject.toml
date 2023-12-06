@@ -17,5 +17,6 @@
     Homepage = "https://github.com/Josef-Hlink/AoC23"
 
 [project.scripts]
+    setup = "paoc.cli:setup_cli"
     scaffold = "paoc.cli:scaffold_cli"
     solve = "paoc.cli:solve_cli"

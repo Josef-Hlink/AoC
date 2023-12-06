@@ -85,7 +85,7 @@ def setup() -> None:
     # answers.txt
     with open(PAOC / f'y{YEAR}' / 'answers.txt', 'w') as f:
         f.write('')
-    print(f'setup for 20{YEAR} complete, run `paoc scaffold <day>` to create a solution file')
+    print(f'setup for 20{YEAR} complete, run `scaffold <day>` to create a solution file')
     return
 
 def scaffold(day: int) -> None:
