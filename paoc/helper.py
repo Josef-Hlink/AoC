@@ -110,22 +110,16 @@ def _get_title(day: int = None) -> str:
 def _bold(text: str) -> str:
     return '\033[1m' + text + '\033[0m'
 
-def _download_input_file(day: int = None) -> None:
-    """ Use `curl` to download the input file for a given day's puzzle.
-    If no day is given, use today's date.
-    """
-    day = day or datetime.today().day
-    url = f'https://adventofcode.com/2023/day/{day}/input'
+def _download_input_file(day: int) -> None:
+    """ Use `curl` to download the input file for a given day's puzzle. """
+    url = f'https://adventofcode.com/20{YEAR}/day/{day}/input'
     print(f'downloading input file from {url}')
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {INPUTS / f"day{day}.txt"}')
     return
 
-def _scrape_title(day: int = None) -> None:
-    """ Scrape the title for a given day's puzzle and add it to titles.txt.
-    If no day is given, use today's date.
-    """
-    day = day or datetime.today().day
-    url = f'https://adventofcode.com/2023/day/{day}'
+def _scrape_title(day: int) -> None:
+    """ Scrape the title for a given day's puzzle and add it to titles.txt. """
+    url = f'https://adventofcode.com/20{YEAR}/day/{day}'
     print(f'scraping title from {url}')
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {ROOT / "tmp.html"}')
     with open(ROOT / 'tmp.html', 'r') as f:
