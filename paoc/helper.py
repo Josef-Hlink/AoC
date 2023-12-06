@@ -77,13 +77,13 @@ def setup() -> None:
     assert not SOLUTIONS.exists(), f'solutions directory for year 20{YEAR} already exists'
     SOLUTIONS.mkdir(parents=True)
     # __init__.py
-    with open(PAOC / '__init__.py', 'w') as f:
+    with open(PAOC / f'y{YEAR}' / '__init__.py', 'w') as f:
         f.write(f'""" Everything related to the 20{YEAR} installment of Advent of Code. """\n')
     # titles.txt
-    with open(PAOC / 'titles.txt', 'w') as f:
+    with open(PAOC / f'y{YEAR}' / 'titles.txt', 'w') as f:
         f.write('')
     # answers.txt
-    with open(PAOC / 'answers.txt', 'w') as f:
+    with open(PAOC / f'y{YEAR}' / 'answers.txt', 'w') as f:
         f.write('')
     print(f'setup for 20{YEAR} complete, run `paoc scaffold <day>` to create a solution file')
     return
@@ -97,9 +97,19 @@ def scaffold(day: int) -> None:
     assert not (SOLUTIONS / f'day{day}.py').exists(), f'solution for day {day} already exists'
     with open(PAOC / f'template.py', 'r') as f:
         lines = f.read().splitlines()
-    lines[3] = f'""" AoC {YEAR} Day {day} - {title} """'
+    replacements = {
+        '<YY>': str(YEAR),
+        '<DD>': str(day),
+        '<Title>': title,
+        '...': f'_ = get_input({day})',
+    }
+    new_lines = []
+    for line in lines:
+        for temp, new in replacements.items():
+            line = line.replace(temp, new)
+        new_lines.append(line)
     with open(SOLUTIONS / f'day{day}.py', 'w') as f:
-        f.writelines('\n'.join(lines) + '\n')
+        f.writelines('\n'.join(new_lines) + '\n')
     return
 
 def solve(day: int) -> None:
