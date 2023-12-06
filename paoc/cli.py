@@ -5,8 +5,13 @@
 
 import sys
 from paoc.constants import SOLUTIONS
-from paoc.helper import scaffold, solve
+from paoc.helper import setup, scaffold, solve
 
+
+def setup_cli() -> None:
+    """ Create directory structure for the year. """
+    setup()
+    return
 
 def scaffold_cli() -> None:
     """ Create boilerplate .py file for a given day's puzzle. """

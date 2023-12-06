@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" AoC XX Day YY - Title """
+""" AoC <YY> Day <DD> - <Title> """
 
 from paoc.helper import get_input, print_summary
 
