@@ -32,12 +32,12 @@ class Hand:
         if self.hand_type_strength != other.hand_type_strength:
             return self.hand_type_strength < other.hand_type_strength
         for s, o in zip(self.cards, other.cards):
-            if self.cards_order.index(s) == self.cards_order.index(o):
-                continue
-            return self.cards_order.index(s) < self.cards_order.index(o)
+            if self.cards_order.index(s) != self.cards_order.index(o):
+                return self.cards_order.index(s) < self.cards_order.index(o)
+        raise ValueError('Hands are the exact same')
 
 def calc_total_winnings(hands: list[str], rule_set: int) -> int:
-    return sum([hand.bid * i for i, hand in enumerate(sorted([Hand(*line.split(), rule_set) for line in hands]), start=1)])
+    return sum([i * hand.bid for i, hand in enumerate(sorted([Hand(*hand.split(), rule_set) for hand in hands]), start=1)])
 
 def p1() -> any:
     return calc_total_winnings(get_input(7), rule_set=1)
