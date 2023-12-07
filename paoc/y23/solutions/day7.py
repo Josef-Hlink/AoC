@@ -29,11 +29,11 @@ class Hand:
         return ((1,1,1,1,1), (1,1,1,2), (1,2,2), (1,1,3), (2,3), (1,4), (5,)).index(counts)
 
     def __lt__(self, other: "Hand") -> bool:
-        if self.hand_type_strength != other.hand_type_strength:
-            return self.hand_type_strength < other.hand_type_strength
+        if (ss:=self.hand_type_strength) != (os:=other.hand_type_strength):
+            return ss < os
         for s, o in zip(self.cards, other.cards):
-            if self.cards_order.index(s) != self.cards_order.index(o):
-                return self.cards_order.index(s) < self.cards_order.index(o)
+            if (si:=self.cards_order.index(s)) != (oi:=self.cards_order.index(o)):
+                return si < oi
         raise ValueError('Hands are the exact same')
 
 def calc_total_winnings(hands: list[str], rule_set: int) -> int:
