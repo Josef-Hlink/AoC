@@ -2,8 +2,8 @@
 
 This repository contains my solutions to the [Advent of Code](https://adventofcode.com/) puzzles, written in Python.
 Solutions for different years will live in different directories:
-- _paoc/y22/solutions/day1.py_
-- _paoc/y23/solutions/day2.py_
+- _paoc/y22/solutions/day01.py_
+- _paoc/y23/solutions/day02.py_
 - etc.
 
 Having one repository is just something I like.
@@ -23,11 +23,11 @@ Having one repository is just something I like.
     └── y23
         ├── __init__.py
         ├── inputs
-        │   ├── day1.txt
+        │   ├── day01.txt
         │   └── ...
         ├── solutions
         │   ├── __init__.py
-        │   ├── day1.py
+        │   ├── day01.py
         │   └── ...
         ├── answers.txt
         └── titles.txt
@@ -81,7 +81,7 @@ When you want to start for a new day, run the `scaffold` command with the day nu
 scaffold 1
 ```
 
-This will download the input for the day to _input/day1.txt_ and create a file for your solution in _solutions/day1.py_.
+This will download the input for the day to _input/day01.txt_ and create a file for your solution in _solutions/day01.py_.
 
 It will also add the title of the puzzle to _titles.txt_ (we use this for the docstring in the solution file) and for pretty printing the output.
 
@@ -109,7 +109,7 @@ if __name__ == '__main__':
 
 Naturally, `p1` and `p2` will return your solutions to part 1 and 2 respectively.
 
-Now, you could run the file manually with `python3 paoc/y23/solutions/day1.py` but that's not very fun.
+Now, you could run the file manually with `python3 paoc/y23/solutions/day01.py` but that's not very fun.
 
 Instead, you can use the `solve` command to run it for you:
 

@@ -21,12 +21,13 @@ def get_input(day: int = None) -> list[str]:
     If input file is not already downloaded, download it.
     """
     day = day or datetime.today().day
+    zday = str(day).zfill(2)
     if not INPUTS.exists():
         INPUTS.mkdir(parents=True)
-    if not (INPUTS / f'day{day}.txt').exists():
+    if not (INPUTS / f'day{zday}.txt').exists():
         print(f'{_bold("WARNING")} input file for day {day} not found.')
         _download_input_file(day)
-    with open(INPUTS / f'day{day}.txt', 'r') as f:
+    with open(INPUTS / f'day{zday}.txt', 'r') as f:
         lines = f.read().splitlines()
     return lines
 
@@ -93,9 +94,10 @@ def scaffold(day: int) -> None:
     if 2000 + YEAR == datetime.today().year:
         assert day <= datetime.today().day, f'cannot scaffold for future days'
     title = _get_title(day)
-    if not (INPUTS / f'day{day}.txt').exists():
-        _download_input_file(day)    
-    assert not (SOLUTIONS / f'day{day}.py').exists(), f'solution for day {day} already exists'
+    zday = str(day).zfill(2)
+    if not (INPUTS / f'day{zday}.txt').exists():
+        _download_input_file(day)
+    assert not (SOLUTIONS / f'day{zday}.py').exists(), f'solution for day {day} already exists'
     with open(PAOC / f'template.py', 'r') as f:
         lines = f.read().splitlines()
     replacements = {
@@ -109,14 +111,15 @@ def scaffold(day: int) -> None:
         for temp, new in replacements.items():
             line = line.replace(temp, new)
         new_lines.append(line)
-    with open(SOLUTIONS / f'day{day}.py', 'w') as f:
+    with open(SOLUTIONS / f'day{zday}.py', 'w') as f:
         f.writelines('\n'.join(new_lines) + '\n')
     return
 
 def solve(day: int) -> None:
     """ Run solution script for given day's puzzle. """
-    assert (SOLUTIONS / f'day{day}.py').exists(), f"solution for day {day} doesn't exist"
-    os.system(f'python {SOLUTIONS / f"day{day}.py"}')
+    zday = str(day).zfill(2)
+    assert (SOLUTIONS / f'day{zday}.py').exists(), f"solution for day {day} doesn't exist"
+    os.system(f'python3 {SOLUTIONS / f"day{zday}.py"}')
     return
 
 ###########
@@ -145,7 +148,8 @@ def _download_input_file(day: int) -> None:
     """ Use `curl` to download the input file for a given day's puzzle. """
     url = f'https://adventofcode.com/20{YEAR}/day/{day}/input'
     print(f'downloading input file from {url}')
-    os.system(f'curl {url} -H "cookie: session={COOKIE}" > {INPUTS / f"day{day}.txt"}')
+    zday = str(day).zfill(2)
+    os.system(f'curl {url} -H "cookie: session={COOKIE}" > {INPUTS / f"day{zday}.txt"}')
     return
 
 def _scrape_title(day: int) -> None:
