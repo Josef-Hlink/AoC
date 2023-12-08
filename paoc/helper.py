@@ -50,10 +50,10 @@ def parse_multiline_string(multiline_string: str) -> list[str]:
 def print_summary(caller: str, p1: Callable[[], any], p2: Callable[[], any], n = 100) -> None:
     """ Print the summary for the day.
     ### args:
-    `caller`: the `__file__` variable from the caller file.
-    `p1`, `p2`: functions that return the solutions for part 1 and part 2 respectively.
+    - `caller`: the `__file__` variable from the caller file.
+    - `p1`, `p2`: functions that return the solutions for part 1 and part 2 respectively.
     These solutions are printed, along with some insights on the performance.
-    `n`: number of times functions are called in performance test.
+    - `n`: number of times functions are called in performance test.
     """
     day = int(caller.split('day')[1].split('.')[0])  # caller is /path/to/day[X]X.py
     print(f'day {day} - ' + _bold(_get_title(day)))
