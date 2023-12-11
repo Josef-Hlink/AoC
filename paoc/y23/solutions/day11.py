@@ -8,8 +8,9 @@ import numpy as np
 from itertools import combinations
 
 
-def calc_distances(universe: np.ndarray, n_exp: int = 1) -> list[int]:
+def calc_distances(image: list[str], n_exp: int = 1) -> list[int]:
     """ Find out which rows and columns are empty, then calculate adjusted Manhattan distance. """
+    universe = np.array([['.#'.index(c) for c in row] for row in image], dtype=bool)
     empty = tuple(set(np.where(universe.sum(axis=i)==0)[0]) for i in (1, 0))
     return [distance(a, b, empty, n_exp) for a, b in combinations(zip(*np.where(universe==1)), 2)]
 
@@ -28,12 +29,10 @@ def distance_1l(a: tuple[int, int], b: tuple[int, int], empty: tuple[set[int]], 
     return sum(abs((ai:=a[i])-(bi:=b[i])) + len(set(range(min(ai, bi), max(ai, bi))) & empty[i]) * n_exp for i in (1, 0))
 
 def p1() -> int:
-    universe = np.array([['.#'.index(c) for c in row] for row in get_input(11)], dtype=bool)
-    return sum(calc_distances(universe))
+    return sum(calc_distances(get_input(11)))
 
 def p2() -> int:
-    universe = np.array([['.#'.index(c) for c in row] for row in get_input(11)], dtype=bool)
-    return sum(calc_distances(universe, n_exp=int(1e6-1)))
+    return sum(calc_distances(get_input(11), n_exp=int(1e6-1)))
 
 
 if __name__ == '__main__':
