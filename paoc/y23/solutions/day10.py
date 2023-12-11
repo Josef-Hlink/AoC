@@ -4,6 +4,7 @@
 """ AoC 23 Day 10 - Pipe Maze """
 
 from paoc.helper import get_input, print_summary
+import sys
 
 
 # global variables related to directions
@@ -151,9 +152,9 @@ def next_pipe_in_row(pipes: list[Pipe], r_sign: int = None) -> Pipe | None:
         r_sign = pipe.r_sign
     return pipe
 
-def find_area(grid: list[str], pipeline: Pipeline) -> int:
+def find_area(grid: list[str], pipeline: Pipeline) -> list[tuple[int, int]]:
     """ Find the area enclosed in the pipeline loop using the non-zero winding rule. """
-    area = 0
+    area = []
     for r, row in enumerate(grid):
         pipes = pipeline.get_pipes_in_row(r)
         # column numbers with pipes that are part of the pipeline
@@ -169,10 +170,28 @@ def find_area(grid: list[str], pipeline: Pipeline) -> int:
                 # these are all positions enclosed in the loop
                 span = range(c+1, pipe.c)
                 # but we need to subtract the positions that are part of the loop themselves
-                area += len(set(span) - pipe_positions)
+                area.extend((r, c_) for c_ in (set(span) - pipe_positions))
             c, r_sign = pipe.c, pipe.r_sign
             inside = not inside
     return area
+
+def visualize() -> None:
+    """ Print the grid with the pipeline loop. """
+    grid = get_input(10)
+    pipeline = find_pipeline(grid)
+    area = find_area(grid, pipeline)
+    for r, row in enumerate(grid):
+        pipes = pipeline.get_pipes_in_row(r)
+        print(f'{r:3d} ', end='')
+        for c, char in enumerate(row):
+            if pipes and pipes[0].c == c:
+                print('\033[40m' + pipes.pop(0).pchar + '\033[49m', end='')
+            elif (r, c) in area:
+                print('\033[42m' + PRETTY_CHARS[char] + '\033[49m', end='')
+            else:
+                print('\033[41m' + PRETTY_CHARS[char] + '\033[49m', end='')
+        print()
+    return
 
 def p1() -> int:
     grid = get_input(10)
@@ -183,8 +202,11 @@ def p2() -> int:
     grid = get_input(10)
     pipeline = find_pipeline(grid)
     area = find_area(grid, pipeline)
-    return area
+    return len(area)
 
 
 if __name__ == '__main__':
-    print_summary(__file__, p1, p2, n=10)
+    if len(sys.argv) > 1 and sys.argv[1] == 'visualize':
+        visualize()
+    else:
+        print_summary(__file__, p1, p2, n=10)
