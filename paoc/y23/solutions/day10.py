@@ -121,8 +121,8 @@ def find_pipeline(grid: list[str]) -> Pipeline:
         pipe = Pipe(grid[r][c], r, c, in_dir=start_dir)
         if not start @ pipe:  # pipes are not connected, so we
             continue          # skip this path
-        # store starting pipe and its first neighbor
-        pipeline = Pipeline([start, pipe])
+        # store starting pipe in new pipeline object
+        pipeline = Pipeline([start])
         # walk until we find the starting pipe again
         while pipe.char != 'S':
             r, c = step(pipe.pos, pipe.next_dir)
