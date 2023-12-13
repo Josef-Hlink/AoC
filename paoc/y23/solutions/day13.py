@@ -30,7 +30,7 @@ def p1() -> int:
         res += find_mirror(np.transpose(grid))
     return res
 
-def p2() -> any:
+def p2() -> int:
     grids = parse_input(get_input(13))
     res = 0
     for grid in grids:
