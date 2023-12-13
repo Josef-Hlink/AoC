@@ -56,3 +56,22 @@ The screenshot is very large, so you can either
 or [check out](assets/day10-full.png) the png file itself.
 
 The source code for these visualizations is in the solution script for day 10 itself.
+
+## 2023 day 12
+
+I had serious trouble with p2 today.
+For p1, I actually even exhaustively tried all arrangements with something like
+
+```python
+itertools.product('.#', repeat=len(springs.count('?')))
+```
+
+This took half a minute to run, so when I read the prompt for p2, I didn't even dare to try continuing with this approach.
+I then created the basic recursive approach with help of ChatGPT, which significantly decrease the runtime for p1.
+For p2 however, I had to get some serious help as I've never really done DP (dynamic programming) before, and I'm not even that comfortable with recursion to begin with.
+
+[This](https://youtu.be/g3Ms5e7Jdqo?si=sea2GgO5b6LAy5uS) amazing video by [hyper-neutrino](https://youtube.com/@hyper-neutrino?si=hKw9cVwq7-1mV7b9) explains the solution very well.
+Functionally, I just copied his approach and wrote it in my own style to make sure I understand it (I believe I do).
+
+DP is still a bit scary to me, but this was a step in the right direction.
+Anyways, I kept the recursive approach for p1 in the solution file, as it's nice to see how the two approaches differ.
