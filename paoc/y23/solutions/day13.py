@@ -8,37 +8,50 @@ import numpy as np
 
 
 def parse_input(lines: list[str]) -> list[np.ndarray]:
-    """ TODO: add param to `get_input` to get raw contents or make new function for this (to preserve type correctness). """
-    return [np.array([list(map('.#'.index, row)) for row in grid.split('\n')], dtype=bool) for grid in '\n'.join(lines).split('\n\n')]
+    """ Each pattern in the input file (separated by an empty line) becomes a np array. """
+    return [np.array([list(r) for r in p.split('\n')]) for p in '\n'.join(lines).split('\n\n')]
 
-def find_mirror(grid: np.ndarray, smudged: bool = False) -> int:
-    orig_split = find_mirror(grid, smudged=False) if smudged else 0
+def find_split(grid: np.ndarray, smudged: bool = False) -> int:
+    """ Finds the row index after which the grid is mirrored. If no such index exists, returns 0. """
+    
+    # if the grid is smudged, we want to know its original split so we can ignore that one
+    orig_split = find_split(grid, smudged=False) if smudged else 0
+    
+    # evaluate all possible splits
     for split in range(1, grid.shape[0]):
+        
         if split == orig_split:
             continue
+        
+        # iteratively check if the backward and corresponding forward row are the same
         violations = 0
-        for back, forward in zip(reversed(grid[:split]), grid[split:]):
-            violations += sum(back != forward)
+        for backward, forward in zip(reversed(grid[:split]), grid[split:]):
+            # if the grid is smudged, we tolerate 1 (truthy) violation
+            # otherwise we tolerate 0 (falsy) violations
+            violations += sum(backward != forward)
             if violations > smudged:
                 break
+        
+        # loop wasn't broken out of, so no(t enough) violations were found for this split
         else:
             return split
+
+    # no split was found
     return 0
 
+
 def p1() -> int:
-    grids = parse_input(get_input(13))
     res = 0
-    for grid in grids:
-        res += 100 * find_mirror(grid)
-        res += find_mirror(grid.T)
+    for grid in parse_input(get_input(13)):
+        # there's only ever one horizontal or vertical split,
+        # so if a horizontal one was found we don't have to evaluate the vertical too
+        res += 100 * find_split(grid) or find_split(grid.T)
     return res
 
 def p2() -> int:
-    grids = parse_input(get_input(13))
     res = 0
-    for grid in grids:
-        res += 100 * find_mirror(grid, smudged=True)
-        res += find_mirror(grid.T, smudged=True)
+    for grid in parse_input(get_input(13)):
+        res += 100 * find_split(grid, smudged=True) or find_split(grid.T, smudged=True)
     return res
 
 
