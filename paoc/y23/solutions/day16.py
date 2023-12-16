@@ -48,12 +48,8 @@ class Head:
     @property
     def c(self) -> int: return self.pos[1]
 
-def find_energized(grid: list[str]) -> set[Pos]:
+def find_energized(grid: list[str], first_head: Head) -> set[Pos]:
 
-    global R, C
-    R, C = len(grid), len(grid[0])
-
-    first_head = Head((0, 0), E)
     heads = [first_head]
     head_starts = {(first_head.pos, first_head.dir)}
 
@@ -89,12 +85,24 @@ def find_energized(grid: list[str]) -> set[Pos]:
 
 def p1() -> int:
     grid = get_input(16)
-    return len(find_energized(grid))
+    global R, C
+    R, C = len(grid), len(grid[0])
+    first_head = Head((0, 0), E)
+    return len(find_energized(grid, first_head))
 
 def p2() -> int:
-    _ = get_input(16)
+    grid = get_input(16)
+    max_energized = 0
+    global R, C
+    R, C = len(grid), len(grid[0])
+    for r in range(R):
+        max_energized = max(max_energized, len(find_energized(grid, Head((r, 0), E))))
+        max_energized = max(max_energized, len(find_energized(grid, Head((r, C-1), W))))
+    for c in range(C):
+        max_energized = max(max_energized, len(find_energized(grid, Head((0, c), S))))
+        max_energized = max(max_energized, len(find_energized(grid, Head((R-1, c), N))))
+    return max_energized
 
 
 if __name__ == '__main__':
-    print(p1())
-    # print_summary(__file__, p1, p2)
+    print_summary(__file__, p1, p2, n=10)
