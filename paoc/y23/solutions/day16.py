@@ -6,101 +6,75 @@
 from paoc.helper import get_input, print_summary
 
 
-FM = '/'
-BM = '\\'
-VS = '-'
-HS = '|'
-
 N = (-1, 0)
 S = (+1, 0)
 W = (0, -1)
 E = (0, +1)
 
-MIRRORS = {
-    FM: {N: E, S: W, W: S, E: N},
-    BM: {N: W, S: E, W: N, E: S}
-}
-
-SPLITS = {
-    VS: {N: (W, E), S: (W, E), W: (W, ), E: (E, )},
-    HS: {N: (N, ), S: (S, ), W: (N, S), E: (N, S)}
-}
-
-Pos = tuple[int, int]
-Dir = tuple[int, int]
-
-class Head:
-    def __init__(self, pos: Pos, dir: Dir):
+class Photon:
+    def __init__(self, pos: tuple[int, int], dir: tuple[int, int]):
         self.pos = pos
         self.dir = dir
 
-    def step(self) -> None:
+    def move(self) -> None:
         next_pos = (self.pos[0] + self.dir[0], self.pos[1] + self.dir[1])
         self.pos = next_pos
-    
-    @property
-    def in_grid(self) -> bool:
-        return -1 < self.r < R and -1 < self.c < C
 
-    @property
-    def r(self) -> int: return self.pos[0]
+def find_energized(contraption: list[str], origin: Photon) -> set[tuple[int, int]]:
 
-    @property
-    def c(self) -> int: return self.pos[1]
+    nr, nc = len(contraption), len(contraption[0])
 
-def find_energized(grid: list[str], first_head: Head) -> set[Pos]:
+    mirrors = {
+        '/':  {N: E,  S: W,  W: S,  E: N},
+        '\\': {N: W,  S: E,  W: N,  E: S}
+    }
+    splits = {
+        '-': {N: (W, E),  S: (W, E)},
+        '|': {W: (N, S),  E: (N, S)}
+    }
 
-    heads = [first_head]
-    head_starts = {(first_head.pos, first_head.dir)}
+    photons = [origin]
+    sources = {(origin.pos, origin.dir)}
 
-    budget = 1000
-    energized: set[Pos] = set()
-    while heads and budget:
-        new_heads = []
-        for head in heads:
-            while head.in_grid:
-                energized.add(head.pos)
-                tile_type = grid[head.r][head.c]
+    energized: set[tuple[int, int]] = set()
+    while photons:
+        for p in photons:
+            while -1 < p.pos[0] < nr and -1 < p.pos[1] < nc:
+                energized.add(p.pos)
+                tile_type = contraption[p.pos[0]][p.pos[1]]
                 if tile_type == '.':
+                    # this happens often, so we save time by skipping slightly more expensive checks
                     pass
-                elif tile_type in MIRRORS:
-                    head.dir = MIRRORS[tile_type][head.dir]
-                elif tile_type in SPLITS:
-                    new_dirs = SPLITS[tile_type][head.dir]
-                    if len(new_dirs) == 1:
-                        head.dir = new_dirs[0]
-                    elif len(new_dirs) == 2:
-                        for new_head in (Head(head.pos, new_dirs[0]), Head(head.pos, new_dirs[1])):
-                            if (new_head.pos, new_head.dir) not in head_starts:
-                                new_heads.append(new_head)
-                                head_starts.add((new_head.pos, new_head.dir))
-                        break
-                head.step()
-            heads.remove(head)
-        heads += new_heads
-        budget -= 1
-
+                elif tile_type in mirrors:
+                    # direction just gets changed, but we'll keep using the same photon object
+                    p.dir = mirrors[tile_type][p.dir]
+                elif tile_type in splits and p.dir in splits[tile_type]:
+                    # two new photon objects are created (if we haven't seen them before)
+                    new_dirs = splits[tile_type][p.dir]
+                    for p_ in (Photon(p.pos, new_dirs[0]), Photon(p.pos, new_dirs[1])):
+                        if (p_.pos, p_.dir) not in sources:
+                            photons.append(p_)
+                            sources.add((p_.pos, p_.dir))
+                    # the old photon dies
+                    break
+                p.move()
+            photons.remove(p)
     return energized
 
 
 def p1() -> int:
-    grid = get_input(16)
-    global R, C
-    R, C = len(grid), len(grid[0])
-    first_head = Head((0, 0), E)
-    return len(find_energized(grid, first_head))
+    return len(find_energized(get_input(16), Photon((0, 0), E)))
 
 def p2() -> int:
-    grid = get_input(16)
+    contraption = get_input(16)
+    nr, nc = len(contraption), len(contraption[0])
     max_energized = 0
-    global R, C
-    R, C = len(grid), len(grid[0])
-    for r in range(R):
-        max_energized = max(max_energized, len(find_energized(grid, Head((r, 0), E))))
-        max_energized = max(max_energized, len(find_energized(grid, Head((r, C-1), W))))
-    for c in range(C):
-        max_energized = max(max_energized, len(find_energized(grid, Head((0, c), S))))
-        max_energized = max(max_energized, len(find_energized(grid, Head((R-1, c), N))))
+    for r in range(nr):
+        max_energized = max(max_energized, len(find_energized(contraption, Photon((r, 0), E))))
+        max_energized = max(max_energized, len(find_energized(contraption, Photon((r, nc-1), W))))
+    for c in range(nr):
+        max_energized = max(max_energized, len(find_energized(contraption, Photon((0, c), S))))
+        max_energized = max(max_energized, len(find_energized(contraption, Photon((nr-1, c), N))))
     return max_energized
 
 
