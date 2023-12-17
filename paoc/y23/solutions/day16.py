@@ -4,6 +4,7 @@
 """ AoC 23 Day 16 - The Floor Will Be Lava """
 
 from paoc.helper import get_input, print_summary
+from collections import deque
 import os
 import sys
 import time
@@ -61,31 +62,31 @@ def energize(contraption: Contraption, origin: Photon) -> Contraption:
         '|': {W: (N, S),  E: (N, S)}
     }
 
-    photons = [origin]
+    photons = deque()
+    photons.append(origin)
     sources = {(origin.pos, origin.dir)}
 
     while photons:
-        for p in photons:
-            while -1 < p.pos[0] < contraption.nr and -1 < p.pos[1] < contraption.nc:
-                contraption.energize(p.pos)
-                tile_type = contraption[p.pos[0]][p.pos[1]]
-                if tile_type == '.':
-                    # this happens often, so we save time by skipping slightly more expensive checks
-                    pass
-                elif tile_type in mirrors:
-                    # direction just gets changed, but we'll keep using the same photon object
-                    p.dir = mirrors[tile_type][p.dir]
-                elif tile_type in splits and p.dir in splits[tile_type]:
-                    # two new photon objects are created (if we haven't seen them before)
-                    new_dirs = splits[tile_type][p.dir]
-                    for p_ in (Photon(p.pos, new_dirs[0]), Photon(p.pos, new_dirs[1])):
-                        if (p_.pos, p_.dir) not in sources:
-                            photons.append(p_)
-                            sources.add((p_.pos, p_.dir))
-                    # the old photon dies
-                    break
-                p.move()
-            photons.remove(p)
+        p = photons.popleft()
+        while -1 < p.pos[0] < contraption.nr and -1 < p.pos[1] < contraption.nc:
+            contraption.energize(p.pos)
+            tile_type = contraption[p.pos[0]][p.pos[1]]
+            if tile_type == '.':
+                # this happens often, so we save time by skipping slightly more expensive checks
+                pass
+            elif tile_type in mirrors:
+                # direction just gets changed, but we'll keep using the same photon object
+                p.dir = mirrors[tile_type][p.dir]
+            elif tile_type in splits and p.dir in splits[tile_type]:
+                # two new photon objects are created (if we haven't seen them before)
+                new_dirs = splits[tile_type][p.dir]
+                for p_ in (Photon(p.pos, new_dirs[0]), Photon(p.pos, new_dirs[1])):
+                    if (p_.pos, p_.dir) not in sources:
+                        photons.append(p_)
+                        sources.add((p_.pos, p_.dir))
+                # the old photon dies
+                break
+            p.move()
         if contraption.visual:
             contraption.render()
     return contraption
