@@ -20,7 +20,7 @@ def p1() -> any:
 
 def p2() -> any:
     reports = [list(map(int, line.split())) for line in get_input(2)]  # N x m
-    mods_per_report = [[r[:i]+r[i+1:] for i in range(len(r))] for r in reports] # N x m x (m-1)
+    mods_per_report = [[r[:i]+r[i+1:] for i in range(len(r))] for r in reports]  # N x m x (m-1)
     return sum(any(check_safety(mod) for mod in mods) for mods in mods_per_report)
 
 if __name__ == '__main__':
