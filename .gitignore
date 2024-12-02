@@ -2,3 +2,4 @@ venv
 inputs
 __pycache__
 .vscode
+session.json
