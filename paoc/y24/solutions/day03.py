@@ -12,14 +12,13 @@ def p1() -> any:
 
 def p2() -> any:
     res, enabled = 0, True
-    for line in get_input(3):
-        matches = re.findall(r'(mul\((\d+),(\d+)\))|(do\(\))|(don\'t\(\))', line)
-        while matches:
-            instr = matches.pop(0)  # instruction: [mul(x,y), x, y, do(), don't()]
-            if instr[0]:  # mul; tuple looks like [mul(x,y), x, y, '', '']
-                res += int(instr[1]) * int(instr[2]) * enabled
-            else:  # enable/disable; tuple is ['', '', '', do(), ''] or ['', '', '', '', don't()]
-                enabled = instr[3] == 'do()'
+    matches = re.findall(r'(mul\((\d+),(\d+)\))|(do\(\))|(don\'t\(\))', ''.join(get_input(3)))
+    while matches:
+        instr = matches.pop(0)  # instruction: [mul(x,y), x, y, do(), don't()]
+        if instr[0]:  # mul; tuple looks like [mul(x,y), x, y, '', '']
+            res += int(instr[1]) * int(instr[2]) * enabled
+        else:  # enable/disable; tuple is ['', '', '', do(), ''] or ['', '', '', '', don't()]
+            enabled = instr[3] == 'do()'
     return res
 
 
