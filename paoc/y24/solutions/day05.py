@@ -7,14 +7,14 @@ from paoc.helper import get_input, print_summary
 from collections import defaultdict
 
 
-def parse(lines: list[str]) -> tuple[dict[int, set[int]], map[list[int]]]:
+def parse(lines: list[str]) -> tuple[dict[int, set[int]], list[list[int]]]:
     """ split doc into dict with rules and iterable (map) with updates """
     i = lines.index('')  # empty line splits rules from updates
     rules = defaultdict(set)
     # page "a" keeps memory of what pages "b" should not come before it
     for a, b in map(lambda x: tuple(map(int, x.split('|'))), lines[:i]):
         rules[a].add(b)
-    updates = map(lambda x: list(map(int, x.split(','))), lines[i+1:])
+    updates = list(map(lambda x: list(map(int, x.split(','))), lines[i+1:]))
     return rules, updates
 
 def fix(update: list[int], rules: dict[int, set[int]]) -> list[int]:
