@@ -27,6 +27,18 @@ def fix(update: list[int], rules: dict[int, set[int]]) -> list[int]:
             update.pop(i); update.insert(violations.index(True), p)
     return update
 
+def fix_rec(order: list[int], pages: set[int], rules: dict[int, set[int]]) -> list[int] | None:
+    """ recursive attempt that "works", but is way too slow for real input """
+    if not pages:  # no more pages left; correct order found
+        return order
+    for page in pages:
+        bl = set().union(*[rules[p] for p in order])
+        if page in bl:
+            continue
+        pages_ = pages.copy(); pages_.remove(page)
+        if (order_:=fix_rec(order + [page], pages_, rules)) is not None:
+            return order_
+    return
 
 def p1() -> any:
     rules, updates = parse(get_input(5))
