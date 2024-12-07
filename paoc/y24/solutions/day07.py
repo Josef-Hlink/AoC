@@ -15,9 +15,9 @@ def total_calibration(lines: list[str], op_chars: str = '+*') -> int:
         for ops in product(op_chars, repeat=len(nums)-1):
             x = nums[0]
             for op, num in zip(ops, nums[1:]):
-                if op == '+':   x += num
-                elif op == '*': x *= num
-                else: x = int(str(x) + str(num))
+                if   op == '+': x = x + num
+                elif op == '*': x = x * num
+                else:           x = int(str(x) + str(num))
             if x == val:
                 total += val
                 break
