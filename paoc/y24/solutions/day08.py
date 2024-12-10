@@ -26,7 +26,7 @@ def locate_antinodes(lines: list[str], mul: int = 1) -> set[tuple]:
     # first group the antennae
     antennae = defaultdict(set)
     for i, line in enumerate(lines):
-        for match in re.finditer(f'[^\.]', line):  # match every non-'.' char
+        for match in re.finditer(r'[^\.]', line):  # match every non-'.' char
             antennae[match.group()].add(Vec(i, match.span()[0]))
     
     # now find all unique antinodes
