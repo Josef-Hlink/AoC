@@ -18,7 +18,6 @@ def init_disk(disk_map: str) -> tuple[list[str], list[int], list[int]]:
 def check(disk: list[int]) -> int:
     return sum(map(lambda i: i * int(disk[i]) if disk[i] != '.' else 0, range(len(disk))))
 
-
 def p1() -> any:
     disk, _, _ = init_disk(get_input(9)[0])
     while '.' in disk:
