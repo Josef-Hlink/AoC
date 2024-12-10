@@ -7,3 +7,4 @@
 7: Bridge Repair
 8: Resonant Collinearity
 9: Disk Fragmenter
+10: Hoof It
