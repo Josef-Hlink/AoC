@@ -35,7 +35,8 @@ def calc_perimeter_1(region: set[tuple]) -> int:
                 p += 1
     return p
 
-def grow(i, j, face: set, visited: set):
+def grow(i: int, j: int, face: set[tuple], visited: set[tuple]) -> None:
+    """ ! modifies visited ! """
     Q = deque([(i, j)])
     while Q:
         i, j = Q.popleft()
@@ -79,10 +80,10 @@ def solve(lines: list[str], cost_func: callable) -> int:
     return cost
 
 def p1() -> any:
-    return solve(get_input(12), calc_perimeter_1)
+    return solve(get_input(12), cost_func=calc_perimeter_1)
 
 def p2() -> any:
-    return solve(get_input(12), calc_perimeter_2)
+    return solve(get_input(12), cost_func=calc_perimeter_2)
 
 
 if __name__ == '__main__':
