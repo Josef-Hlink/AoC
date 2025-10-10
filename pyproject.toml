@@ -1,24 +1,21 @@
-[build-system]
-    requires = ["hatchling"]
-    build-backend = "hatchling.build"
-
 [project]
-    name = "paoc"
-    version = "0.0.1"
-    authors = [{name="J. Hamelink", email ="jdhamelink0@gmail.com"}] 
-    description = "Advent of Code 2023"
-    readme = "README.md"
-    requires-python = ">=3.10"
-    dependencies = [
-        "ipykernel",
-        "numpy",
-        "tqdm",
-    ]
+name = "paoc"
+version = "0.0.1"
+authors = [{name = "Josef Hamelink", email = "jdhamelink0@gmail.com"}] 
+description = "Advent of Code 2023"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ipykernel",
+    "numpy",
+    "tqdm",
+]
 
-[project.urls]
-    Homepage = "https://github.com/Josef-Hlink/AoC23"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project.scripts]
-    setup = "paoc.cli:setup_cli"
-    scaffold = "paoc.cli:scaffold_cli"
-    solve = "paoc.cli:solve_cli"
+setup = "paoc.cli:setup_cli"
+scaffold = "paoc.cli:scaffold_cli"
+solve = "paoc.cli:solve_cli"
