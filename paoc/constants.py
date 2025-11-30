@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Constants for paoc. """
+"""Constants for paoc."""
 
 import os
 from pathlib import Path

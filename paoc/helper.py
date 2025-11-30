@@ -1,12 +1,11 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" General helper functions; some public, some private. """
+"""General helper functions; some public, some private."""
 
 import os
 from datetime import datetime
 from timeit import Timer
-from typing import Callable
+from typing import Callable, Optional
 
 from paoc.constants import YEAR, COOKIE, ROOT, INPUTS, PAOC, SOLUTIONS
 
@@ -15,8 +14,9 @@ from paoc.constants import YEAR, COOKIE, ROOT, INPUTS, PAOC, SOLUTIONS
 # PUBLIC #
 ##########
 
-def get_input(day: int = None) -> list[str]:
-    """ Return the input for a given day's puzzle as a list of strings.
+
+def get_input(day: Optional[int] = None) -> list[str]:
+    """Return the input for a given day's puzzle as a list of strings.
     If no day is given, use today's date.
     If input file is not already downloaded, download it.
     """
@@ -31,46 +31,55 @@ def get_input(day: int = None) -> list[str]:
         lines = f.read().splitlines()
     return lines
 
+
 def parse_multiline_string(multiline_string: str) -> list[str]:
-    """ Allows you to paste the example input as a multiline string and have it be a list of strings.
-    
+    """Allows you to paste the example input as a multiline string and have it be a list of strings.
+    This is useful for testing with example inputs in the code itself, expecially in notebooks.
+
     Example usage:
-    ```
+
+    ```python
     from paoc.helper import parse_multiline_string as pms
+
     ex_lines = pms(\"\"\"
     hello
     world
     123
     \"\"\")
+
     ex_lines: list[str]  # ['hello', 'world', '123']
     ```
     """
     return multiline_string[1:].splitlines()
 
-def print_summary(caller: str, p1: Callable[[], any], p2: Callable[[], any], n = 100) -> None:
-    """ Print the summary for the day.
-    ### args:
+
+def print_summary(caller: str, p1: Callable[[], int], p2: Callable[[], int], n: int = 100) -> None:
+    """Print the summary for the day.
+
+    Args:
     - `caller`: the `__file__` variable from the caller file.
     - `p1`, `p2`: functions that return the solutions for part 1 and part 2 respectively.
     These solutions are printed, along with some insights on the performance.
     - `n`: number of times functions are called in performance test.
     """
-    day = int(caller.split('day')[1].split('.')[0])  # caller is /path/to/day[X]X.py
+    day = int(caller.split('day')[1].split('.')[0])  # caller is .../path/to/dayXX.py
     print(f'day {day} - ' + _bold(_get_title(day)))
     print(_bold('solutions'))
     print(f'> 1: {p1()}')
     print(f'> 2: {p2()}')
     print(_bold('performance') + f' (ran {n} times)')
-    print(f'> 1: {_fmt_runtime(Timer(p1).timeit(n)/n)} per run')
-    print(f'> 2: {_fmt_runtime(Timer(p2).timeit(n)/n)} per run')
+    print(f'> 1: {_fmt_runtime(Timer(p1).timeit(n) / n)} per run')
+    print(f'> 2: {_fmt_runtime(Timer(p2).timeit(n) / n)} per run')
     return
+
 
 #######
 # CLI #
 #######
 
+
 def setup() -> None:
-    """ Create directory structure for the year. """
+    """Create directory structure for the year."""
     # inputs
     assert not INPUTS.exists(), f'inputs directory for year 20{YEAR} already exists'
     INPUTS.mkdir(parents=True)
@@ -89,8 +98,9 @@ def setup() -> None:
     print(f'setup for 20{YEAR} complete, run `scaffold <day>` to create a solution file')
     return
 
+
 def scaffold(day: int) -> None:
-    """ Create boilerplate .py file for a given day's puzzle. """
+    """Create boilerplate .py file for a given day's puzzle."""
     if 2000 + YEAR == datetime.today().year:
         assert day <= datetime.today().day, f'cannot scaffold for future days'
     title = _get_title(day)
@@ -115,19 +125,22 @@ def scaffold(day: int) -> None:
         f.writelines('\n'.join(new_lines) + '\n')
     return
 
+
 def solve(day: int) -> None:
-    """ Run solution script for given day's puzzle. """
+    """Run solution script for given day's puzzle."""
     zday = str(day).zfill(2)
     assert (SOLUTIONS / f'day{zday}.py').exists(), f"solution for day {day} doesn't exist"
     os.system(f'python3 {SOLUTIONS / f"day{zday}.py"}')
     return
 
+
 ###########
 # PRIVATE #
 ###########
 
-def _get_title(day: int = None) -> str:
-    """ Return the title for a given day's puzzle.
+
+def _get_title(day: Optional[int] = None) -> str:
+    """Return the title for a given day's puzzle.
     If no day is given, use today's date.
     If the title is not found, print a warning and return an empty string.
     """
@@ -141,19 +154,22 @@ def _get_title(day: int = None) -> str:
         return _get_title(day)  # call function again to get the title
     return titles[day]
 
+
 def _bold(text: str) -> str:
     return '\033[1m' + text + '\033[0m'
 
+
 def _download_input_file(day: int) -> None:
-    """ Use `curl` to download the input file for a given day's puzzle. """
+    """Use `curl` to download the input file for a given day's puzzle."""
     url = f'https://adventofcode.com/20{YEAR}/day/{day}/input'
     print(f'downloading input file from {url}')
     zday = str(day).zfill(2)
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {INPUTS / f"day{zday}.txt"}')
     return
 
+
 def _scrape_title(day: int) -> None:
-    """ Scrape the title for a given day's puzzle and add it to titles.txt. """
+    """Scrape the title for a given day's puzzle and add it to titles.txt."""
     url = f'https://adventofcode.com/20{YEAR}/day/{day}'
     print(f'scraping title from {url}')
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {ROOT / "tmp.html"}')
@@ -167,11 +183,12 @@ def _scrape_title(day: int) -> None:
         f.write(f'{day}: {title}\n')
     return
 
+
 def _fmt_runtime(seconds: float) -> str:
-    """ Format runtime given in ms, s, or m:ss """
+    """Format runtime given in ms, s, or m:ss"""
+    assert seconds >= 0, 'seconds must be non-negative'
     if seconds < 1:
-        return f'{seconds*1000:.2f} ms'
+        return f'{seconds * 1000:.2f} ms'
     if 1 < seconds < 60:
         return f'{seconds:.2f} s'
-    if seconds >= 60:
-        return f'{seconds//60}:{int(seconds%60):02}'
+    return f'{seconds // 60}:{int(seconds % 60):02}'  # over one minute

@@ -1,1 +1,1 @@
-""" Python solutions for Advent of Code: paoc. """
+"""Python solutions for Advent of Code: paoc."""

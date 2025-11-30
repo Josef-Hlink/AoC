@@ -1,16 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" AoC <YY> Day <DD> - <Title> """
+"""AoC <YY> Day <DD> - <Title>"""
 
 from paoc.helper import get_input, print_summary
 
 
-def p1() -> any:
-    ...
+def p1() -> int: ...
 
-def p2() -> any:
-    ...
+
+def p2() -> int: ...
 
 
 if __name__ == '__main__':
