@@ -1,10 +1,10 @@
 [project]
 name = "paoc"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{name = "Josef Hamelink", email = "jdhamelink0@gmail.com"}] 
 description = "Advent of Code 2023"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "dotenv>=0.9.9",
     "ipykernel",
@@ -20,3 +20,36 @@ build-backend = "hatchling.build"
 setup = "paoc.cli:setup_cli"
 scaffold = "paoc.cli:scaffold_cli"
 solve = "paoc.cli:solve_cli"
+
+[tool.ruff]
+target-version = "py312"
+extend-exclude = ["*.ipynb", "paoc/y*"]
+show-fixes = true
+line-length = 100  # default is 88
+indent-width = 4  # default but explicit
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "single"
+
+[tool.ruff.lint]
+extend-select = [
+    "E",  # pycodestyle (PEP8)
+    "D",  # pydocstyle (docstrings)
+    "I",  # isort (import sorting)
+    "F",  # pyflakes (static analysis)
+    "B",  # bugbear (opinionated linting)
+    "UP",  # pyupgrade (modern syntax)
+]
+ignore = [
+    "UP009",  # "redundant" encoding declaration
+    "UP045",  # preferring X | None over typing.Optional[X]
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.7",
+]
