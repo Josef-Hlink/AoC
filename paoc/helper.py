@@ -88,7 +88,7 @@ def setup() -> None:
     SOLUTIONS.mkdir(parents=True)
     # __init__.py
     with open(PAOC / f'y{YEAR}' / '__init__.py', 'w') as f:
-        f.write(f'""" Everything related to the 20{YEAR} installment of Advent of Code. """\n')
+        f.write(f'"""Everything related to the 20{YEAR} installment of Advent of Code."""\n')
     # titles.txt
     with open(PAOC / f'y{YEAR}' / 'titles.txt', 'w') as f:
         f.write('')
