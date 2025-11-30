@@ -3,3 +3,4 @@ inputs
 __pycache__
 .vscode
 session.json
+.env
