@@ -3,15 +3,15 @@
 """General helper functions; some public, some private."""
 
 import os
-from datetime import datetime
 import re
+from collections.abc import Callable
+from datetime import datetime
 from timeit import Timer
-from typing import Callable, Optional, cast
+from typing import Optional, cast
 
 from bs4 import BeautifulSoup, Tag
 
-from paoc.constants import YEAR, COOKIE, ROOT, INPUTS, PAOC, SOLUTIONS
-
+from paoc.constants import COOKIE, INPUTS, PAOC, ROOT, SOLUTIONS, YEAR
 
 ##########
 # PUBLIC #
@@ -20,6 +20,7 @@ from paoc.constants import YEAR, COOKIE, ROOT, INPUTS, PAOC, SOLUTIONS
 
 def get_input(day: Optional[int] = None, example: bool = False) -> list[str]:
     """Return the input for a given day's puzzle as a list of strings.
+
     If no day is given, use today's date.
     If input file is not already downloaded, download it.
     If `example` is True, return the example input instead.
@@ -33,14 +34,15 @@ def get_input(day: Optional[int] = None, example: bool = False) -> list[str]:
         print(f'{_bold("WARNING")} example input file for day {day} not found.')
         _scrape_example(day)
     prefix = 'ex' if example else 'day'
-    with open(INPUTS / f'{prefix}{zday}.txt', 'r') as f:
+    with open(INPUTS / f'{prefix}{zday}.txt') as f:
         lines = f.read().splitlines()
     return lines
 
 
 def parse_multiline_string(multiline_string: str) -> list[str]:
     """Allows you to paste the example input as a multiline string and have it be a list of strings.
-    This is useful for testing with example inputs in the code itself, expecially in notebooks.
+
+    This is useful for testing with example inputs in the code itself, especially in notebooks.
 
     Example usage:
 
@@ -60,13 +62,13 @@ def parse_multiline_string(multiline_string: str) -> list[str]:
 
 
 def print_summary(caller: str, p1: Callable[[], int], p2: Callable[[], int], n: int = 100) -> None:
-    """Print the summary for the day.
+    """Print the summary for the day including title, solutions, and performance.
 
     Args:
-    - `caller`: the `__file__` variable from the caller file.
-    - `p1`, `p2`: functions that return the solutions for part 1 and part 2 respectively.
-    These solutions are printed, along with some insights on the performance.
-    - `n`: number of times functions are called in performance test.
+        caller: the `__file__` variable from the caller file.
+        p1: function that returns the solution for part 1.
+        p2: function that returns the solution for part 2.
+        n: number of times functions are called in performance test.
     """
     day = int(caller.split('day')[1].split('.')[0])  # caller is .../path/to/dayXX.py
     print(f'day {day} - ' + _bold(_get_title(day)))
@@ -108,7 +110,7 @@ def setup() -> None:
 def scaffold(day: int) -> None:
     """Create boilerplate .py file for a given day's puzzle."""
     if 2000 + YEAR == datetime.today().year:
-        assert day <= datetime.today().day, f'cannot scaffold for future days'
+        assert day <= datetime.today().day, 'cannot scaffold for future days'
     title = _get_title(day)
     zday = str(day).zfill(2)
     if not (INPUTS / f'day{zday}.txt').exists():
@@ -116,7 +118,7 @@ def scaffold(day: int) -> None:
     if not (INPUTS / f'ex{zday}.txt').exists():
         _scrape_example(day)
     assert not (SOLUTIONS / f'day{zday}.py').exists(), f'solution for day {day} already exists'
-    with open(PAOC / f'template.py', 'r') as f:
+    with open(PAOC / 'template.py') as f:
         lines = f.read().splitlines()
     replacements = {
         '<YY>': str(YEAR),
@@ -149,11 +151,11 @@ def solve(day: int) -> None:
 
 def _get_title(day: Optional[int] = None) -> str:
     """Return the title for a given day's puzzle.
+
     If no day is given, use today's date.
-    If the title is not found, print a warning and return an empty string.
     """
     day = day or datetime.today().day
-    with open(PAOC / f'y{YEAR}' / 'titles.txt', 'r') as f:
+    with open(PAOC / f'y{YEAR}' / 'titles.txt') as f:
         lines = f.read().splitlines()
     titles = {int(line.split(': ')[0]): line.split(': ')[1] for line in lines}
     if day not in titles:
@@ -181,7 +183,7 @@ def _scrape_title(day: int) -> None:
     url = f'https://adventofcode.com/20{YEAR}/day/{day}'
     print(f'scraping title from {url}')
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {ROOT / "tmp.html"}')
-    with open(ROOT / 'tmp.html', 'r') as f:
+    with open(ROOT / 'tmp.html') as f:
         soup = BeautifulSoup(f.read(), 'html.parser')
     try:
         article = cast(Tag, soup.find('article', class_='day-desc'))
@@ -201,7 +203,7 @@ def _scrape_example(day: int) -> None:
     url = f'https://adventofcode.com/20{YEAR}/day/{day}'
     print(f'scraping example from {url}')
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {ROOT / "tmp.html"}')
-    with open(ROOT / 'tmp.html', 'r') as f:
+    with open(ROOT / 'tmp.html') as f:
         soup = BeautifulSoup(f.read(), 'html.parser')
     try:
         article = cast(Tag, soup.find('article', class_='day-desc'))
@@ -216,7 +218,7 @@ def _scrape_example(day: int) -> None:
 
 
 def _fmt_runtime(seconds: float) -> str:
-    """Format runtime given in ms, s, or m:ss"""
+    """Format runtime given in ms, s, or m:ss."""
     assert seconds >= 0, 'seconds must be non-negative'
     if seconds < 1:
         return f'{seconds * 1000:.2f} ms'

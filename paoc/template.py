@@ -6,10 +6,14 @@
 from paoc.helper import get_input, print_summary
 
 
-def p1() -> int: ...
+def p1() -> int:
+    ...
+    return 0
 
 
-def p2() -> int: ...
+def p2() -> int:
+    ...
+    return 0
 
 
 if __name__ == '__main__':

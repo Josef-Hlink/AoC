@@ -24,7 +24,7 @@ solve = "paoc.cli:solve_cli"
 
 [tool.ruff]
 target-version = "py312"
-extend-exclude = ["*.ipynb", "paoc/y*"]
+extend-exclude = ["*.ipynb", "paoc/y*", "paoc/template.py"]
 show-fixes = true
 line-length = 100  # default is 88
 indent-width = 4  # default but explicit

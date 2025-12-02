@@ -5,7 +5,6 @@
 import os
 from pathlib import Path
 
-
 # environment variables
 YEAR: int = int(os.environ['AOC_YEAR'])
 COOKIE: str = os.environ['AOC_COOKIE']

@@ -3,8 +3,9 @@
 """Command line interface methods for paoc."""
 
 import sys
+
 from paoc.constants import SOLUTIONS
-from paoc.helper import setup, scaffold, solve
+from paoc.helper import scaffold, setup, solve
 
 
 def setup_cli() -> None:
@@ -15,7 +16,7 @@ def setup_cli() -> None:
 
 def scaffold_cli() -> None:
     """Create boilerplate .py file for a given day's puzzle."""
-    assert len(sys.argv) == 2, f'usage: scaffold <day>'
+    assert len(sys.argv) == 2, 'usage: scaffold <day>'
     day = int(sys.argv[1])
     scaffold(day)
     return
@@ -23,7 +24,7 @@ def scaffold_cli() -> None:
 
 def solve_cli() -> None:
     """Run solution script for given day's puzzle."""
-    assert len(sys.argv) == 2, f'usage: solve <day>|all'
+    assert len(sys.argv) == 2, 'usage: solve <day>|all'
     if sys.argv[1] == 'all':
         for file in sorted(SOLUTIONS.iterdir()):
             if not file.name.startswith('day'):
