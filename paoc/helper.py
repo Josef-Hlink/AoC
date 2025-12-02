@@ -4,8 +4,11 @@
 
 import os
 from datetime import datetime
+import re
 from timeit import Timer
-from typing import Callable, Optional
+from typing import Callable, Optional, cast
+
+from bs4 import BeautifulSoup, Tag
 
 from paoc.constants import YEAR, COOKIE, ROOT, INPUTS, PAOC, SOLUTIONS
 
@@ -15,19 +18,22 @@ from paoc.constants import YEAR, COOKIE, ROOT, INPUTS, PAOC, SOLUTIONS
 ##########
 
 
-def get_input(day: Optional[int] = None) -> list[str]:
+def get_input(day: Optional[int] = None, example: bool = False) -> list[str]:
     """Return the input for a given day's puzzle as a list of strings.
     If no day is given, use today's date.
     If input file is not already downloaded, download it.
+    If `example` is True, return the example input instead.
     """
     day = day or datetime.today().day
     zday = str(day).zfill(2)
-    if not INPUTS.exists():
-        INPUTS.mkdir(parents=True)
-    if not (INPUTS / f'day{zday}.txt').exists():
+    if not example and not (INPUTS / f'day{zday}.txt').exists():
         print(f'{_bold("WARNING")} input file for day {day} not found.')
         _download_input_file(day)
-    with open(INPUTS / f'day{zday}.txt', 'r') as f:
+    if example and not (INPUTS / f'ex{zday}.txt').exists():
+        print(f'{_bold("WARNING")} example input file for day {day} not found.')
+        _scrape_example(day)
+    prefix = 'ex' if example else 'day'
+    with open(INPUTS / f'{prefix}{zday}.txt', 'r') as f:
         lines = f.read().splitlines()
     return lines
 
@@ -107,6 +113,8 @@ def scaffold(day: int) -> None:
     zday = str(day).zfill(2)
     if not (INPUTS / f'day{zday}.txt').exists():
         _download_input_file(day)
+    if not (INPUTS / f'ex{zday}.txt').exists():
+        _scrape_example(day)
     assert not (SOLUTIONS / f'day{zday}.py').exists(), f'solution for day {day} already exists'
     with open(PAOC / f'template.py', 'r') as f:
         lines = f.read().splitlines()
@@ -174,13 +182,36 @@ def _scrape_title(day: int) -> None:
     print(f'scraping title from {url}')
     os.system(f'curl {url} -H "cookie: session={COOKIE}" > {ROOT / "tmp.html"}')
     with open(ROOT / 'tmp.html', 'r') as f:
-        html = f.read().splitlines()
-    line = [line for line in html if line.startswith('<article class="day-desc"><h2>')][0]
+        soup = BeautifulSoup(f.read(), 'html.parser')
+    try:
+        article = cast(Tag, soup.find('article', class_='day-desc'))
+        h2 = cast(Tag, article.find('h2')).get_text()
+        title = cast(re.Match, re.search(r'\d+:(.*?)---', h2)).group(1).strip()
+    except Exception:
+        title = 'N/A'
     os.system(f'rm {ROOT / "tmp.html"}')
-    assert str(day) in line, f'could not find title for day {day}'
-    title = line.split('---')[1].split(': ')[1][:-1]
+    print(f'title for day {day}: {title}')
     with open(PAOC / f'y{YEAR}' / 'titles.txt', 'a') as f:
         f.write(f'{day}: {title}\n')
+    return
+
+
+def _scrape_example(day: int) -> None:
+    """Scrape the first code block from a given day's puzzle and save it under inputs/exXX.txt."""
+    url = f'https://adventofcode.com/20{YEAR}/day/{day}'
+    print(f'scraping example from {url}')
+    os.system(f'curl {url} -H "cookie: session={COOKIE}" > {ROOT / "tmp.html"}')
+    with open(ROOT / 'tmp.html', 'r') as f:
+        soup = BeautifulSoup(f.read(), 'html.parser')
+    try:
+        article = cast(Tag, soup.find('article', class_='day-desc'))
+        example = cast(Tag, article.find('pre')).get_text()
+    except Exception:
+        example = 'N/A'
+    os.system(f'rm {ROOT / "tmp.html"}')
+    print(f'example input for day {day}:\n{example}')
+    with open(INPUTS / f'ex{str(day).zfill(2)}.txt', 'w') as f:
+        f.write(example)
     return
 
 
