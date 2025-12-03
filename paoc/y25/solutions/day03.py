@@ -18,9 +18,9 @@ def find_max_total_joltage(banks: list[str], n_batteries: int) -> int:
             # Find highest digit in valid slice
             digit = max(bank[l + 1 : len(bank) - r])
             digits.append(digit)
-            # Find index of earliest occurrence of this highest digit in valid slice,
+            # Get index of earliest occurrence of this highest digit in valid slice,
             # so it (and everything before it) can be excluded in next iteration.
-            l = bank.find(digit, l + 1, len(bank) - r)
+            l = bank.index(digit, l + 1, len(bank) - r)
         total_joltage += int(''.join(map(str, digits)))
     return total_joltage
 
