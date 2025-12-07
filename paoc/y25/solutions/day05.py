@@ -14,10 +14,6 @@ def p1() -> int:
     return sum(any(i in r for r in ranges) for i in map(int, lines[s + 1 :]))
 
 
-def discard_dupes(r1: range, r2: range) -> range:
-    return range(max(r1.start, r2.stop), r1.stop)
-
-
 def p2() -> int:
     lines = get_input(5)
     s = lines.index('')
@@ -25,7 +21,7 @@ def p2() -> int:
     exc_ranges: list[range] = []
     for r1 in sorted(ranges, key=lambda r: r.start):
         for r2 in exc_ranges:
-            r1 = discard_dupes(r1, r2)
+            r1 = range(max(r1.start, r2.stop), r1.stop)
         if r1.stop > r1.start:
             exc_ranges.append(r1)
     return sum(map(lambda r: r.stop - r.start, exc_ranges))
