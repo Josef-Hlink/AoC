@@ -5,3 +5,4 @@
 5: Cafeteria
 6: Trash Compactor
 7: Laboratories
+8: Playground
