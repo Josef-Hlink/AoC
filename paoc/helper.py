@@ -224,4 +224,4 @@ def _fmt_runtime(seconds: float) -> str:
         return f'{seconds * 1000:.2f} ms'
     if 1 < seconds < 60:
         return f'{seconds:.2f} s'
-    return f'{seconds // 60}:{int(seconds % 60):02}'  # over one minute
+    return f'{int(seconds // 60)}:{int(seconds % 60):02}'  # over one minute
