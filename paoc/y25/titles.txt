@@ -7,3 +7,4 @@
 7: Laboratories
 8: Playground
 9: Movie Theater
+10: Factory
